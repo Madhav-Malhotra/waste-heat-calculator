@@ -1,4 +1,17 @@
-#include <iostream>
+// @file         - helpers.cpp
+// @brief        - Physics and math functions for calculating the efficiency of a stove
+// @author       - Madhav Malhotra
+// @author       - Cynthia Shen
+// @date         - 2022-09-21
+// @version      - 0.5.0
+// @since 0.4.0  - Defined functions involving arrays and data storage
+// @since 0.3.0  - Defined physics functions in file
+// @since 0.2.0  - Defined physical constants
+// @since 0.1.0  - Created file and outlined functions to include
+// ======================================================================================
+
+
+
 
 // CONSTANTS
 #define GRAV_ACCELERATION 9.807       // [ m / (s^2)   ]
@@ -14,7 +27,6 @@
 
 
 // FUNCTION DECLARATIONS
-int main();
 float water_mass_weight(float weight);
 float water_mass_volume(float volume);
 float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size);
@@ -29,10 +41,6 @@ float ROI(float initial_cost, float annual_savings);
 
 
 // FUNCTION DEFINITIONS
-int main() {
-  return 0;
-}
-
 float water_mass_weight(float weight) {
   return 0;
 }
