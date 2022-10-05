@@ -8,7 +8,7 @@
 // @since 0.3.0  - Defined physics functions in file
 // @since 0.2.0  - Defined physical constants
 // @since 0.1.0  - Created file and outlined functions to include
-// ======================================================================================
+// =======================================================================================
 
 
 
@@ -27,7 +27,7 @@
 
 
 // FUNCTION DECLARATIONS
-float water_mass_weight(float weight);
+float water_mass_weight(float weight_container, float weight_water_container);
 float water_mass_volume(float volume);
 float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size);
 float energy_transferred(float water_mass, float* temp_array, int temp_array_size);
@@ -41,12 +41,23 @@ float ROI(float initial_cost, float annual_savings);
 
 
 // FUNCTION DEFINITIONS
-float water_mass_weight(float weight) {
-  return 0;
+
+
+// @brief                         - Get the mass of the water with weight measurements
+// @param weight_container        - Weight of the container without water [g]
+// @param weight_water_container  - Weight of the container with water [g]
+// @return                        - Mass of the water [g]
+float water_mass_weight(float weight_container, float weight_water_container) {
+  float weight_water = weight_water_container - weight_container;
+  return weight_water / GRAV_ACCELERATION;
 }
 
+
+// @brief                         - Get the mass of the water with volume measurements
+// @param volume                  - Volume of water used [L]
+// @return                        - Mass of the water [g]
 float water_mass_volume(float volume) {
-  return 0;
+  return volume * WATER_DENSITY;
 }
 
 
