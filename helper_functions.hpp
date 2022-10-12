@@ -1,28 +1,15 @@
-// @file         - helpers.cpp
+// @file         - helpers.hpp
 // @brief        - Physics and math functions for calculating the efficiency of a stove
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-09-21
-// @version      - 0.5.0
+// @version      - 0.6.0
+// @since 0.5.0  - Split into header files.
 // @since 0.4.0  - Defined functions involving arrays and data storage
 // @since 0.3.0  - Defined physics functions in file
 // @since 0.2.0  - Defined physical constants
 // @since 0.1.0  - Created file and outlined functions to include
 // =======================================================================================
-
-
-
-
-// CONSTANTS
-#define GRAV_ACCELERATION 9.807       // [ m / (s^2)   ]
-#define WATER_DENSITY 997.77          // [ kg / (m^3)  ]
-#define WATER_HEAT_CAPACITY 4.186     // [ J / g / K   ]
-#define DAILY_USE 2.0                 // [ hours / day ]
-#define YEARLY_USE 365                // [ days / year ]
-#define UNIT_PRICE 0.13               // [ $ / kWh     ]
-#define ALT_RATED_POWER 1700.0        // [ W / hour    ]
-#define ALT_INITIAL_COST 944.0        // [ $CAD        ]
-#define ALT_REBATE_PERCENT 0.25       // [ %           ]
 
 
 
