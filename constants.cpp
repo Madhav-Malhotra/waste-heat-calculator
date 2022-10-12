@@ -9,7 +9,6 @@
 
 
 
-#define GRAV_ACCELERATION 9.807       // [ m / (s^2)   ]
 #define WATER_DENSITY 997.77          // [ kg / (m^3)  ]
 #define WATER_HEAT_CAPACITY 4.186     // [ J / g / K   ]
 #define DAILY_USE 2.0                 // [ hours / day ]

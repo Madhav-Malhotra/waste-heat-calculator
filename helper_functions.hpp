@@ -1,4 +1,4 @@
-// @file         - helpers.hpp
+// @file         - helper_functions.hpp
 // @brief        - Physics and math functions for calculating the efficiency of a stove
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
@@ -11,6 +11,9 @@
 // @since 0.1.0  - Created file and outlined functions to include
 // =======================================================================================
 
+
+
+#include <cassert> 
 
 
 // FUNCTION DECLARATIONS
@@ -33,32 +36,44 @@ float ROI(float initial_cost, float annual_savings);
 // @brief                         - Get the mass of the water with weight measurements
 // @param weight_container        - Weight of the container without water [g]
 // @param weight_water_container  - Weight of the container with water [g]
-// @return                        - Mass of the water [g]
+// @return                        - Mass of the water [kg]
 float water_mass_weight(float weight_container, float weight_water_container) {
-  float weight_water = weight_water_container - weight_container;
-  return weight_water / GRAV_ACCELERATION;
+  // Check inputs
+  assert( weight_container > 0 && "The weight of the container should be over 0 grams.");
+  assert( weight_water_container > 0 && "The weight of the container and water should be over 0 grams.");
+
+  float weight_water = (weight_water_container - weight_container) / 1000;
+  return weight_water;
 }
 
 
 // @brief                         - Get the mass of the water with volume measurements
-// @param volume                  - Volume of water used [L]
-// @return                        - Mass of the water [g]
+// @param volume                  - Volume of water used [mL]
+// @return                        - Mass of the water [kg]
 float water_mass_volume(float volume) {
-  return volume * WATER_DENSITY;
+  // Check inputs
+  assert( volume > 0 && "The volume of the water should be over 0 mL.");
+
+  return (volume / 1000) * WATER_DENSITY;
 }
 
 
 // @brief                 - Add new temperature datapoint to existing aray
 // @param temp_array      - array with temperature measurements over time
 // @param temp_array_size - number of temperature measurements (so far)
-// @param temp_datapoint  - new temperature measurement to add to array
+// @param temp_datapoint  - new temperature measurement to add to array [Celsius]
 // @return                - array with new temperature measurement added to existing ones
 float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size) {
+  // Check inputs
+  assert( temp_datapoint > -20 && "The temperature should be over -20 degrees celsius.");
+  assert( temp_datapoint < 115 && "The temperature should be under 115 degrees celsius.");
+  assert( temp_array_size >= 0 && "The array should have 0 or more measurements.");
+
   // Make new array
   float new_array[temp_array_size + 1];
 
   // Transfer existing datapoints to it
-  for {int i = 0; i < temp_array_size + 1; i++} {
+  for {int i = 0; i < temp_array_size; i++} {
     new_array[i] = *(temp_array + i);
   }
 
@@ -76,6 +91,10 @@ float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_siz
 // @return                - energy transferred to water in joules
 // @equation              - Q = m * c * T
 float energy_transferred(float water_mass, float* temp_array, int temp_array_size) {
+  // Check inputs
+  assert(water_mass > 0 && "The mass of the water should be over 0 kg.");
+  assert(temp_array_size >= 2 && "There should be at least two temperature measurements.");
+
   // Get change in first and last temperature datapoint
   float change_temperature = *temp_array - *(temp_array + temp_array_size - 1);
   
@@ -92,6 +111,10 @@ float energy_transferred(float water_mass, float* temp_array, int temp_array_siz
 // @return               - watts of power 
 // @equation             - P = E / t
 float power(float energy, float time) {
+  // Check inputs
+  assert(energy > 0 && "The energy consumed should be greater than 0 Joules.");
+  assert(time > 0 && "The time passed should be over 0 seconds.");
+
   return energy / time;
 }
 
@@ -102,6 +125,10 @@ float power(float energy, float time) {
 // @return               - unitless ratio of useful power to total power
 // @equation             - Eff = P_out / P_in
 float efficiency(float useful_power, float rated_power) {
+  // Check inputs
+  assert(useful_power > 0 && "The power transferred to water should be over 0 joules.");
+  assert(rated_power > 0 && "The power consumed by the stove should be over 0 joules.");
+
   return useful_power / rated_power;
 }
 
@@ -113,6 +140,12 @@ float efficiency(float useful_power, float rated_power) {
 // @return               - joules of energy consumed per year
 // @equation             - Q = P * t
 float annual_energy(float power, float daily_use, int yearly_use) {
+  // Check inputs
+  assert(power > 0 && "The energy consumed should be greater than 0 joules.");
+  assert(daily_use >= 0 && "The hours of daily stove use should be at least 0.");
+  assert(yearly_use >= 0 && "The days of annual stove use should be at least 0");
+
+
   int time_in_seconds = 3600 * daily_use * yearly_use;
   return power * time_in_seconds;
 }
@@ -124,6 +157,11 @@ float annual_energy(float power, float daily_use, int yearly_use) {
 // @return               - joules of energy wasted per year
 // @equation             - Q = E * (1 - Eff)
 float waste_energy(float energy, float efficiency) {
+  // Check inputs
+  assert(energy > 0 && "The amount of energy used should be at least 0 joules.");
+  assert(efficiency >= 0 && efficiency <= 1 && "The efficency should be between 0 and 1.");
+
+
   return energy * (1 - efficiency);
 }
 
@@ -133,6 +171,10 @@ float waste_energy(float energy, float efficiency) {
 // @param unit_price     - price of energy in $CAD per kilowatt-hour
 // @return               - cost of energy consumption in $CAD
 float energy_variable_cost(float energy, float unit_price) {
+  // Check inputs
+  assert(energy > 0 && "The amount of energy used should be at least 0 joules.");
+  assert(unit_price >= 0 && "The unit price of energy should $0 / kwH.");
+
   return energy * unit_price;
 }
 
@@ -142,5 +184,9 @@ float energy_variable_cost(float energy, float unit_price) {
 // @param annual_savings - cost of waste energy consumption avoided per year
 // @return               - Number of years until annual savings = initial cost
 float ROI(float initial_cost, float annual_savings) {
+  // Check inputs
+  assert(initial_cost >= 0 && "The initial cost should be at least $0.");
+  assert(annual_savings > 0 && "The amount of money saved per year should be over $0.");
+
   return initial_cost / annual_savings;
 }
