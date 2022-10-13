@@ -3,7 +3,8 @@
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-09-21
-// @version      - 0.6.0
+// @version      - 0.7.0
+// @since 0.6.0  - Added parameter assertions and minor bug fixes
 // @since 0.5.0  - Split into header files.
 // @since 0.4.0  - Defined functions involving arrays and data storage
 // @since 0.3.0  - Defined physics functions in file
@@ -65,9 +66,8 @@ float water_mass_volume(float volume) {
 // @return                - array with new temperature measurement added to existing ones
 float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size) {
   // Check inputs
-  assert( temp_datapoint > -20 && "The temperature should be over -20 degrees celsius.");
-  assert( temp_datapoint < 115 && "The temperature should be under 115 degrees celsius.");
-  assert( temp_array_size >= 0 && "The array should have 0 or more measurements.");
+  assert( temp_datapoint > -20 && temp_datapoint < 115 && "The temperature should be between -20 and 115 degrees celsius.");
+  assert( temp_array_size >= 0 && temp_array_size <= 1000 && "The array should have between 0 and 1000 measurements.");
 
   // Make new array
   float new_array[temp_array_size + 1];
@@ -142,8 +142,8 @@ float efficiency(float useful_power, float rated_power) {
 float annual_energy(float power, float daily_use, int yearly_use) {
   // Check inputs
   assert(power > 0 && "The energy consumed should be greater than 0 joules.");
-  assert(daily_use >= 0 && "The hours of daily stove use should be at least 0.");
-  assert(yearly_use >= 0 && "The days of annual stove use should be at least 0");
+  assert(daily_use >= 0 && daily_use <= 24 && "The hours of daily stove use should be at least 0.");
+  assert(yearly_use >= 0 && yearly_use <= 365 && "The days of annual stove use should be at least 0");
 
 
   int time_in_seconds = 3600 * daily_use * yearly_use;
