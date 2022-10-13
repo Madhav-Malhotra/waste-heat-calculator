@@ -3,7 +3,8 @@
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-09-21
-// @version      - 0.7.0
+// @version      - 0.7.1
+// @since 0.7.0  - Minor syntax errors fixed
 // @since 0.6.0  - Added parameter assertions and minor bug fixes
 // @since 0.5.0  - Split into header files.
 // @since 0.4.0  - Defined functions involving arrays and data storage
@@ -20,7 +21,7 @@
 // FUNCTION DECLARATIONS
 float water_mass_weight(float weight_container, float weight_water_container);
 float water_mass_volume(float volume);
-float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size);
+void add_to_array(float temp_datapoint, float* temp_array, int temp_array_size, float* new_array);
 float energy_transferred(float water_mass, float* temp_array, int temp_array_size);
 float power(float energy, float time);
 float efficiency(float useful_power, float rated_power);
@@ -40,8 +41,10 @@ float ROI(float initial_cost, float annual_savings);
 // @return                        - Mass of the water [kg]
 float water_mass_weight(float weight_container, float weight_water_container) {
   // Check inputs
-  assert( weight_container > 0 && "The weight of the container should be over 0 grams.");
-  assert( weight_water_container > 0 && "The weight of the container and water should be over 0 grams.");
+  assert( weight_container > 0 
+    && "The weight of the container should be over 0 grams.");
+  assert( weight_water_container > 0 
+    && "The weight of the container and water should be over 0 grams.");
 
   float weight_water = (weight_water_container - weight_container) / 1000;
   return weight_water;
@@ -53,7 +56,8 @@ float water_mass_weight(float weight_container, float weight_water_container) {
 // @return                        - Mass of the water [kg]
 float water_mass_volume(float volume) {
   // Check inputs
-  assert( volume > 0 && "The volume of the water should be over 0 mL.");
+  assert( volume > 0 
+    && "The volume of the water should be over 0 mL.");
 
   return (volume / 1000) * WATER_DENSITY;
 }
@@ -63,24 +67,28 @@ float water_mass_volume(float volume) {
 // @param temp_array      - array with temperature measurements over time
 // @param temp_array_size - number of temperature measurements (so far)
 // @param temp_datapoint  - new temperature measurement to add to array [Celsius]
+// @param new_array       - new array with capacity of temp_array_size + 1
 // @return                - array with new temperature measurement added to existing ones
-float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size) {
+void add_to_array(float temp_datapoint, float* temp_array, int temp_array_size, float* new_array) {
   // Check inputs
-  assert( temp_datapoint > -20 && temp_datapoint < 115 && "The temperature should be between -20 and 115 degrees celsius.");
-  assert( temp_array_size >= 0 && temp_array_size <= 1000 && "The array should have between 0 and 1000 measurements.");
-
-  // Make new array
-  float new_array[temp_array_size + 1];
+  assert( temp_datapoint > -20 && temp_datapoint < 115 
+    && "The temperature should be between -20 and 115 degrees celsius.");
+  assert( temp_array_size >= 0 && temp_array_size <= 1000 
+    && "The temperature array should have between 0 and 1000 measurements.");
+  assert( sizeof(temp_array) / sizeof(float) == temp_array_size 
+    && "The temperature array should have the same size as temp_array_size");
+  assert( sizeof(new_array) / sizeof(float) == (temp_array_size + 1) 
+    && "The new array should have a size that is one larger than the temperature array");
 
   // Transfer existing datapoints to it
-  for {int i = 0; i < temp_array_size; i++} {
-    new_array[i] = *(temp_array + i);
+  for (int i = 0; i < temp_array_size; i++) {
+    *(new_array + i) = *(temp_array + i);
   }
 
   // Add new datapoint to it
-  new_array[temp_array_size] = temp_datapoint;
+  *(new_array + temp_array_size) = temp_datapoint;
 
-  return new_array;
+  return;
 }
 
 
@@ -92,8 +100,10 @@ float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_siz
 // @equation              - Q = m * c * T
 float energy_transferred(float water_mass, float* temp_array, int temp_array_size) {
   // Check inputs
-  assert(water_mass > 0 && "The mass of the water should be over 0 kg.");
-  assert(temp_array_size >= 2 && "There should be at least two temperature measurements.");
+  assert(water_mass > 0 
+    && "The mass of the water should be over 0 kg.");
+  assert(temp_array_size >= 2 
+    && "There should be at least two temperature measurements.");
 
   // Get change in first and last temperature datapoint
   float change_temperature = *temp_array - *(temp_array + temp_array_size - 1);
@@ -112,8 +122,10 @@ float energy_transferred(float water_mass, float* temp_array, int temp_array_siz
 // @equation             - P = E / t
 float power(float energy, float time) {
   // Check inputs
-  assert(energy > 0 && "The energy consumed should be greater than 0 Joules.");
-  assert(time > 0 && "The time passed should be over 0 seconds.");
+  assert(energy > 0 
+    && "The energy consumed should be greater than 0 Joules.");
+  assert(time > 0 
+    && "The time passed should be over 0 seconds.");
 
   return energy / time;
 }
@@ -126,8 +138,10 @@ float power(float energy, float time) {
 // @equation             - Eff = P_out / P_in
 float efficiency(float useful_power, float rated_power) {
   // Check inputs
-  assert(useful_power > 0 && "The power transferred to water should be over 0 joules.");
-  assert(rated_power > 0 && "The power consumed by the stove should be over 0 joules.");
+  assert(useful_power > 0 
+    && "The power transferred to water should be over 0 joules.");
+  assert(rated_power > 0 
+    && "The power consumed by the stove should be over 0 joules.");
 
   return useful_power / rated_power;
 }
@@ -141,12 +155,15 @@ float efficiency(float useful_power, float rated_power) {
 // @equation             - Q = P * t
 float annual_energy(float power, float daily_use, int yearly_use) {
   // Check inputs
-  assert(power > 0 && "The energy consumed should be greater than 0 joules.");
-  assert(daily_use >= 0 && daily_use <= 24 && "The hours of daily stove use should be at least 0.");
-  assert(yearly_use >= 0 && yearly_use <= 365 && "The days of annual stove use should be at least 0");
+  assert(power > 0 
+    && "The energy consumed should be greater than 0 joules.");
+  assert(daily_use >= 0 && daily_use <= 24 
+    && "The hours of daily stove use should be at least 0.");
+  assert(yearly_use >= 0 && yearly_use <= 365 
+    && "The days of annual stove use should be at least 0");
 
 
-  int time_in_seconds = 3600 * daily_use * yearly_use;
+  float time_in_seconds = 3600 * daily_use * yearly_use;
   return power * time_in_seconds;
 }
 
@@ -158,8 +175,10 @@ float annual_energy(float power, float daily_use, int yearly_use) {
 // @equation             - Q = E * (1 - Eff)
 float waste_energy(float energy, float efficiency) {
   // Check inputs
-  assert(energy > 0 && "The amount of energy used should be at least 0 joules.");
-  assert(efficiency >= 0 && efficiency <= 1 && "The efficency should be between 0 and 1.");
+  assert(energy > 0 
+    && "The amount of energy used should be at least 0 joules.");
+  assert(efficiency >= 0 && efficiency <= 1 
+    && "The efficency should be between 0 and 1.");
 
 
   return energy * (1 - efficiency);
@@ -172,8 +191,10 @@ float waste_energy(float energy, float efficiency) {
 // @return               - cost of energy consumption in $CAD
 float energy_variable_cost(float energy, float unit_price) {
   // Check inputs
-  assert(energy > 0 && "The amount of energy used should be at least 0 joules.");
-  assert(unit_price >= 0 && "The unit price of energy should $0 / kwH.");
+  assert(energy > 0 
+    && "The amount of energy used should be at least 0 joules.");
+  assert(unit_price >= 0 
+    && "The unit price of energy should $0 / kwH.");
 
   return energy * unit_price;
 }
@@ -185,8 +206,10 @@ float energy_variable_cost(float energy, float unit_price) {
 // @return               - Number of years until annual savings = initial cost
 float ROI(float initial_cost, float annual_savings) {
   // Check inputs
-  assert(initial_cost >= 0 && "The initial cost should be at least $0.");
-  assert(annual_savings > 0 && "The amount of money saved per year should be over $0.");
+  assert(initial_cost >= 0 
+    && "The initial cost should be at least $0.");
+  assert(annual_savings > 0 
+    && "The amount of money saved per year should be over $0.");
 
   return initial_cost / annual_savings;
 }

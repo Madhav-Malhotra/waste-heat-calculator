@@ -30,11 +30,13 @@ float TEST_volume[] = {0.010, 0.999, 1.00001, 55.0, 750.0, 1293.0};
 // @param temp_array      - array with temperature measurements over time
 // @param temp_array_size - number of temperature measurements (so far)
 // @param temp_datapoint  - new temperature measurement to add to array [Celsius]
+// @param new_array       - new array with capacity of temp_array_size + 1
 // @return                - array with new temperature measurement added to existing ones
-// float* temp_to_array(float temp_datapoint, float* temp_array, int temp_array_size)
+// void add_to_array(float temp_datapoint, float* temp_array, int temp_array_size)
 float TEST_temp_datapoint[] = {-19.99, -3.2, -0.0001, 0.0, 0.0001, 0.34, 7.89, 53.23, 99.999, 114.99};
-// Initialise TEST_temp_array with the sizes specified below and default values for testing.
+// Initialise TEST_temp_array with the sizes specified below and default values.
 int TEST_temp_array_size[] = {0, 3, 53, 1000};
+// Initialise TEST_new_array with the sizes specified above and default values.
 
 
 // @brief                 - Find useful energy for heating water

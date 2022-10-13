@@ -12,9 +12,12 @@
 #include <iostream>
 #include "constants.cpp"
 #include "helper_functions.hpp"
+#include "test_data.cpp"
 
 int main();
 
 int main() {
+  std::cout << "Hello world" << std::endl;
+  
   return 0;
 }
