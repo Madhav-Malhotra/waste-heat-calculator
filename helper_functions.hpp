@@ -3,8 +3,8 @@
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-09-21
-// @version      - 0.7.1
-// @since 0.7.0  - Minor syntax errors fixed
+// @version      - 0.7.2
+// @since 0.7.0  - Tested functions. Fixed syntax errors and precision errors.
 // @since 0.6.0  - Added parameter assertions and minor bug fixes
 // @since 0.5.0  - Split into header files.
 // @since 0.4.0  - Defined functions involving arrays and data storage
@@ -19,7 +19,7 @@
 
 
 // FUNCTION DECLARATIONS
-float water_mass_weight(float weight_container, float weight_water_container);
+double water_mass_weight(double weight_container, double weight_water_container);
 float water_mass_volume(float volume);
 void add_to_array(float temp_datapoint, float* temp_array, int temp_array_size, float* new_array);
 float energy_transferred(float water_mass, float* temp_array, int temp_array_size);
@@ -39,14 +39,14 @@ float ROI(float initial_cost, float annual_savings);
 // @param weight_container        - Weight of the container without water [g]
 // @param weight_water_container  - Weight of the container with water [g]
 // @return                        - Mass of the water [kg]
-float water_mass_weight(float weight_container, float weight_water_container) {
+double water_mass_weight(double weight_container, double weight_water_container) {
   // Check inputs
   assert( weight_container > 0 
     && "The weight of the container should be over 0 grams.");
   assert( weight_water_container > 0 
     && "The weight of the container and water should be over 0 grams.");
 
-  float weight_water = (weight_water_container - weight_container) / 1000;
+  double weight_water = (weight_water_container - weight_container) / 1000;
   return weight_water;
 }
 
@@ -73,12 +73,8 @@ void add_to_array(float temp_datapoint, float* temp_array, int temp_array_size, 
   // Check inputs
   assert( temp_datapoint > -20 && temp_datapoint < 115 
     && "The temperature should be between -20 and 115 degrees celsius.");
-  assert( temp_array_size >= 0 && temp_array_size <= 1000 
+  assert( temp_array_size >= 0 && temp_array_size <= 1000
     && "The temperature array should have between 0 and 1000 measurements.");
-  assert( sizeof(temp_array) / sizeof(float) == temp_array_size 
-    && "The temperature array should have the same size as temp_array_size");
-  assert( sizeof(new_array) / sizeof(float) == (temp_array_size + 1) 
-    && "The new array should have a size that is one larger than the temperature array");
 
   // Transfer existing datapoints to it
   for (int i = 0; i < temp_array_size; i++) {

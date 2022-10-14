@@ -7,17 +7,16 @@
 // @since 0.0.0  - Created file, created main, and imported libraries
 // =======================================================================================
 
-
-
-#include <iostream>
 #include "constants.cpp"
+#include <iostream>
 #include "helper_functions.hpp"
-#include "test_data.cpp"
+#include "test_functions.hpp"
 
 int main();
 
+// Add helper function definitions here
+
 int main() {
-  std::cout << "Hello world" << std::endl;
-  
+  test_water_mass_weight();
   return 0;
 }
