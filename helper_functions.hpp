@@ -3,7 +3,7 @@
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-09-21
-// @version      - 1.0.1
+// @version      - 1.0.3
 // @since 0.7.3  - Removed add_to_array() function. Only tracking initial and final temperature.
 // @since 0.7.0  - Tested functions. Fixed syntax errors and precision errors.
 // @since 0.6.0  - Added parameter assertions and minor bug fixes
@@ -17,20 +17,6 @@
 
 
 #include <cassert> 
-
-
-
-// FUNCTION DECLARATIONS
-double water_mass_weight(double weight_container, double weight_water_container);
-double water_mass_volume(double volume);
-void add_to_array(double temp_datapoint, double* temp_array, int temp_array_size, double* new_array);
-double energy_transferred(double water_mass, double* temp_array, int temp_array_size);
-double power(double energy, double time);
-double efficiency(double useful_power, double rated_power);
-double annual_energy(double power, double daily_use, int yearly_use);
-double waste_energy(double energy, double efficiency);
-double energy_variable_cost(double energy, double unit_price);
-double ROI(double initial_cost, double annual_savings);
 
 
 

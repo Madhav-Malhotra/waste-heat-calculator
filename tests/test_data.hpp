@@ -3,7 +3,7 @@
 // @author       - Madhav Malhotra
 // @author       - Cynthia Shen
 // @date         - 2022-10-11
-// @version      - 1.0.0
+// @version      - 1.0.2
 // @since 0.2.1  - Removed add_to_array function/testing. Tracking only init/final temperature
 // @since 0.2.0  - Adjusted some double data to double for increased precision
 // @since 0.1.0  - Created test cases for all input parameters
@@ -66,6 +66,7 @@ double TEST_rated_power[] = {0.0001, 0.3, 1.0001, 53.0, 12912.0};
 // double annual_energy(double power, double daily_use, int yearly_use)
 double TEST_power[] = {0.0001, 0.3, 1.0001, 53.0, 12912.0};
 double TEST_daily_use[] = {0.0001, 0.3, 1.0001, 1.5, 24.0};
+int TEST_yearly_use[] = {1, 13, 153, 365};
 
 // @brief                - Calculates wasted portion of energy consumption
 // @param energy         - joules of total energy consumption
@@ -75,7 +76,7 @@ double TEST_daily_use[] = {0.0001, 0.3, 1.0001, 1.5, 24.0};
 // @equation             - Q = E * (1 - Eff)
 // double waste_energy(double energy, double efficiency)
 // Reuse TEST_energy from above
-double TEST_efficency[] = {0.0001, 0.02, 0.5, 0.799, 0.9999};
+double TEST_efficiency[] = {0.0001, 0.02, 0.5, 0.799, 0.9999};
 
 // @brief                - Calculates variable cost from energy consumption
 // @param energy         - joules of total energy consumption
