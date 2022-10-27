@@ -20,9 +20,6 @@
 
 
 
-// FUNCTION DEFINITIONS
-
-
 // @brief                         - Get the mass of the water with weight measurements
 // @param weight_container        - Weight of the container without water [g]
 // @param weight_water_container  - Weight of the container with water [g]
@@ -44,7 +41,6 @@ double water_mass_weight(double weight_container, double weight_water_container)
 // @return                        - Mass of the water [kg]
 double water_mass_volume(double volume) {
   // Check inputs
-  std::cout << volume << std::endl;
   assert( volume > 0 
     && "The volume of the water should be over 0 mL.");
 
@@ -135,7 +131,7 @@ double waste_energy(double energy, double efficiency) {
   assert(energy > 0 
     && "The amount of energy used should be at least 0 joules.");
   assert(efficiency >= 0 && efficiency <= 1 
-    && "The efficency should be between 0 and 1.");
+    && "The efficiency should be between 0 and 1.");
 
 
   return energy * (1 - efficiency);
