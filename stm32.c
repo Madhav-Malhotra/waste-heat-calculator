@@ -71,6 +71,7 @@ int main(void)
   /* USER CODE BEGIN 1 */
       uint16_t raw_input = 0;
       char text[100] = {0};
+    long double resist = 0;
   /* USER CODE END 1 */
 
   /* MCU Configuration--------------------------------------------------------*/
@@ -103,14 +104,18 @@ int main(void)
   {
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET); //Set GPIO high (for timing purposes)
 
-        HAL_ADC_START(&hadc1); // Read from ADC
+        HAL_ADC_Start(&hadc1); // Read from ADC
         HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY); // Wait for analog to digital conversion
         raw_input = HAL_ADC_GetValue(&hadc1); // Get digital val (0 = 0V, 4095 = max voltage in - ex: 3.3V for 3.3V pin or 5V for 5V pin)
 
+        // Convert raw to resistance
+        long double VOUT = (long double)raw_input * (long double)5 / (long double)4095;
+        resist = ((long double)-12 * VOUT) / (VOUT - (long double)5 );
+
         HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET); //Set GPIO low (for timing purposes)
 
-        // Convert val to string and print
-        sprintf(text, "%hu\r\n", raw);
+        // Convert resistance to string and print
+        sprintf(text, "%Lf\r\n", resist); // % means insert, Lf for long floating point (long double), \r\n for return new line
         HAL_UART_Transmit(&huart2, (uint8_t*)text, strlen(text), HAL_MAX_DELAY);
 
         // Wait another second
