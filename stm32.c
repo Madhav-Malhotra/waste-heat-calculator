@@ -122,6 +122,8 @@ long double VOUT_to_resist(long double VOUT);
 
 long double resist_to_temp(long double resist);
 
+long double get_temp();
+
 long double water_mass_weight(long double weight_container,
 
                          long double weight_water_container);
@@ -167,10 +169,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
-uint16_t raw_input = 0;
-
-char text[100] = {0};
+  // Indicate that program has started
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_Delay(5000);
 
   /* USER CODE END 1 */
 
@@ -210,7 +211,25 @@ char text[100] = {0};
 
   /* USER CODE BEGIN 2 */
 
+  // Init vars
+  uint16_t raw_input = 0;
+  char text[100] = {0};
 
+  long double a_temp[2] = {0.0, 0.0};
+  int time_seconds = 0;
+  a_temp[0] = get_temp();
+
+  long double assumed_mass = 0.1;
+  long double assumed_rated_power = -100.0;
+  long double assumed_daily_use = 2.5;
+  int assumed_yearly_use = 344;
+  long double assumed_unit_price = 2.05e-8;
+  long double assumed_alt_efficiency = 0.75;
+  long double assumed_initial_cost = 1200;
+
+
+  // Turn light off while reading temp
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
   /* USER CODE END 2 */
 
 
@@ -218,44 +237,24 @@ char text[100] = {0};
 
   /* USER CODE BEGIN WHILE */
 
-  while (1)
+  while (1) {
 
-  {
+  // Read temperature
+  a_temp[1] = get_temp();
 
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_SET); //Set GPIO high (for timing purposes)
-
-
-  HAL_ADC_Start(&hadc1); // Read from ADC
-
-  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY); // Wait for analog to digital conversion
-
-  raw_input = HAL_ADC_GetValue(&hadc1); // Get digital val (0 = 0V, 4095 = max voltage in - ex: 3.3V for 3.3V pin or 5V for 5V pin)
-
-
-  // Convert raw to resistance
-
-  long double VOUT = raw_to_VOUT(raw_input);
-
-  long double resist = VOUT_to_resist(VOUT);
-
-  long double temp = resist_to_temp(resist);
-
-
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET); //Set GPIO low (for timing purposes)
-
-
-  // Convert resistance to string and print
-
-  //sprintf(text, "V: %Lf\r\n", VOUT); // % means insert, Lf for long floating point (long double), \r\n for return new line
-
+  /* Convert resistance to string and print
   sprintf(text, "T: %Lf\r\n", temp); // % means insert, Lf for long floating point (long double), \r\n for return new line
-
   HAL_UART_Transmit(&huart2, (uint8_t*)text, strlen(text), HAL_MAX_DELAY);
+  */
 
+  // Wait another second
+  HAL_Delay(995);
+  ++time_seconds;
 
-  // Wait another second (CHANGED to TWO TEMPORARILY)
-
-  HAL_Delay(1995);
+  // Exit loop after 15 seconds (for demo purposes)
+  if (time_seconds > 15) {
+    break;
+  }
 
     /* USER CODE END WHILE */
 
@@ -263,6 +262,42 @@ char text[100] = {0};
     /* USER CODE BEGIN 3 */
 
   }
+
+  // Physics calculations
+  long double energy_transfer = energy_transferred(assumed_mass, a_temp);
+  long double power = power(energy_transfer, time_seconds);
+  long double eff = efficiency(power, assumed_rated_power);
+
+  // Current stove business
+  long double annual_energy = annual_energy(power, assumed_daily_use, assumed_yearly_use);
+  long double waste_energy = waste_energy(annual_energy, eff);
+  long double curr_cost = energy_variable_cost(waste_energy, assumed_unit_price);
+
+  // New stove business
+  long double waste_energy_avoided = waste_energy(waste_energy, assumed_alt_efficiency);
+  long double savings = curr_cost - energy_variable_cost(waste_energy_avoided, assumed_unit_price)
+  long double ROI = ROI(assumed_initial_cost, savings);
+
+  // Show result by blinking light
+  int bound = (int)(ROI + 1); 
+  if (bound < 1) {
+    bound = 1;
+  } else if (bound > 10) {
+    bound = 10;
+  }
+
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+  HAL_Delay(4000);
+  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_Delay(1000);
+  
+  for ( int i = 0; i < bound; i++) {
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+    Hal_Delay(1000);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+    HAL_Delay(1000);
+  }
+
 
   /* USER CODE END 3 */
 
@@ -602,6 +637,25 @@ return 24 + ((resist - base) / change);
 
 }
 
+
+long double get_temp() {
+  HAL_ADC_Start(&hadc1); // Read from ADC
+
+  HAL_ADC_PollForConversion(&hadc1, HAL_MAX_DELAY); // Wait for analog to digital conversion
+
+  raw_input = HAL_ADC_GetValue(&hadc1); // Get digital val (0 = 0V, 4095 = max voltage in - ex: 3.3V for 3.3V pin or 5V for 5V pin)
+
+
+  // Convert raw to resistance
+
+  long double VOUT = raw_to_VOUT(raw_input);
+
+  long double resist = VOUT_to_resist(VOUT);
+
+  long double temp = resist_to_temp(resist);
+
+  return temp;
+}
 
 // ============ PHYS UTILS ==============
 
